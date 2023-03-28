@@ -63,10 +63,16 @@
         margin: 0;
       }
       .stone {
-        background: red;
         border-radius: 50%;
         width: 100%;
         height: 100%;
+      }
+
+      .white {
+        background-color: white;
+      }
+      .black{
+        background-color: black;
       }
 
 
@@ -77,9 +83,19 @@
   <div class="container">
       <div class="board row">
         <?php for($i = 0; $i < 64; $i++): ?>
-          <div class="grid-col grid" id="grid-<?= $i ;?>">
-
-          </div>
+          <?php if($i === 27 || $i === 36): ?>
+            <div class="grid-col grid" id="grid-<?= $i ;?>">
+              <div class="stone white"></div>
+            </div>
+          <?php elseif($i === 28 || $i === 35): ?>
+            <div class="grid-col grid" id="grid-<?= $i ;?>">
+              <div class="stone black"></div>
+            </div>
+          <?php else: ?>
+            <div class="grid-col grid" id="grid-<?= $i ;?>">
+            <div class="stone"></div>
+            </div>
+            <?php endif; ?>
         <?php endfor; ?>
       </div>
 
@@ -108,7 +124,7 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-<script src="js/jsfile.js">
+<script src="js/othello.js">
 
     </script>
 
