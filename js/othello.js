@@ -7,7 +7,7 @@ let yourNum = 1;
 let opColor = 'white';
 let opNum = -1;
 let turn = 1;
-
+let stone = Array();
 // 先手は黒
 
 // board初期設定
@@ -32,57 +32,60 @@ board[4][3] = 1;
 // サイドボード初期設定
 initSideboard();
 
-    // クリックされたとき
-    $('.grid').on('click',function(){
-        // board上なら石が置けるか調べ、可能なら石を置く。
+// if(turn==1){
+//     cpuPlay();
 
-        // idの情報、座標を設定する
-        grid = $(this).attr('id');
-        gridIdNum = getGridIdNum(grid);
-        yx = getYX(gridIdNum);
-        y = yx[0];
-        x = yx[1];
+// }
 
-        let skipTurn = true;
+// debug コンソールログに表示。
+console.log('turn');
+console.log(turn);
+console.log('yourColor');
+console.log(yourColor);
+console.log('yourNum');
+console.log(yourNum);
+console.log('opColor');
+console.log(opColor);
+console.log('opNum');
+console.log(opNum);
+console.log(board);
+    console.log(cpu());
+// クリックされたとき
+$('.grid').on('click',function(){
+    // board上なら石が置けるか調べ、可能なら石を置く。
 
-        // 石が置ける場合
-        if(canSet(yx)){
-            setStone(grid, yx);
+    // idの情報、座標を設定する
+    grid = $(this).attr('id');
+    gridIdNum = getGridIdNum(grid);
+    yx = getYX(gridIdNum);
+    y = yx[0];
+    x = yx[1];
 
-            let arr = getChangeStonesArray(yx);
-            console.log('変更する石の配列');
-            console.log(arr);
+    let skipTurn = true;
 
-                changeStones(arr);
+    // 石が置ける場合
+    if(canSet(yx)){
+        setStone(grid, yx);
 
-            // 手番の交代
-            let stone = changeTurn(first);
-            yourColor = stone[0];
-            yourNum = stone[1];
-            opColor = stone[2];
-            opNum = stone[3];
-            turn += 1;
-            updateSideboard();
-    cpu();
-    
+        let arr = getChangeStonesArray(yx);
+
+            changeStones(arr);
+
+        // 手番の交代
+        let stone = changeTurn(first);
+        yourColor = stone[0];
+        yourNum = stone[1];
+        opColor = stone[2];
+        opNum = stone[3];
+        turn += 1;
+        updateSideboard();
+        setTimeout( function(){cpuPlay()}, 500 );
+        
     }
 
 
-        // debug コンソールログに表示。
-        console.log('turn');
-        console.log(turn);
-        console.log('yourColor');
-        console.log(yourColor);
-        console.log('yourNum');
-        console.log(yourNum);
-        console.log('opColor');
-        console.log(opColor);
-        console.log('opNum');
-        console.log(opNum);
-        console.log(board);
 
-        });
-
+    });
 
 /**
  * 手番によりyouとopponentを交換する
@@ -180,8 +183,6 @@ function getChangeStonesArray(yx){
             // 調べた先が相手の色なら、変更候補の石として値を保存。
             }else if(board[yy][xx] === opNum){
                 tempChanges.push([yy,xx]);
-                console.log('tempchanges');
-                console.log(tempChanges);
             }
         }
     }
@@ -223,12 +224,9 @@ function canSet(yx){
                 continue;
             }
             // 自分の石がある場合
-            // console.log(yy,xx);
             if(board[yy][xx] === yourNum){
                 // この時点までに相手の石があったなら成立
                 if(opFlag){
-                    console.log('canset');
-                    // console.log(board);
                     return true;
                 // なければbreak
                 } else {
@@ -247,7 +245,6 @@ function canSet(yx){
         }
     }
     // ここまでreturnされてなければfalseを返す。
-    console.log("置けません");
     return false;
 }
 
@@ -295,15 +292,50 @@ function cpu(){
             candidate.push(yx);
         }
     }
-    console.log('candidate');
-    console.log(candidate);
-
+    // 変更できる石の数の最大・最小と、その時の座標を記録する。
     let changeStonesArray = Array();
+    let maxChange = 0;
+    let maxChangeYX = Array();
+    let minChange = 10 ** 3;
+    let minChangeYX = Array();
+
     for(let yx of candidate){
-        changeStonesArray.push(getChangeStonesArray(yx));
+        let changes = getChangeStonesArray(yx)
+        changeStonesArray.push(changes);
+        if(maxChange < changes.length){
+            maxChange = changes.length;
+            maxChangeYX = yx;
+        } else if(changes.length < minChange){
+            minChange = changes.length;
+            minChangeYX = yx;
+        }
     }
-    console.log('changeStonesArray');
-    console.log(changeStonesArray);
+    if(turn < 10){
+        console.log('yourNum');
+        console.log(minChangeYX);
+        return minChangeYX;
+    } else {
+        return maxChangeYX;
+    }
+
+}
+
+function cpuPlay(){
+    let cpuyx = cpu();
+    let cpuarr = getChangeStonesArray(cpuyx);
+    let cpugrid = 'grid-' + cpuyx.join("");
+    setStone(cpugrid, cpuyx);
+    changeStones(cpuarr); 
+    stone = changeTurn(first);
+    yourColor = stone[0];
+    yourNum = stone[1];
+    opColor = stone[2];
+    opNum = stone[3];
+    turn += 1;
+    updateSideboard();
+    console.log(cpuyx);
+    console.log(cpuarr);
+    console.log(cpugrid);
 }
 
 
