@@ -59,10 +59,17 @@
 
         height: 200px;
       }
+
+      #op-stone, #your-stone, #now-player{
+        width: 100px;
+        height: 100px;
+      }
+
       p{
         margin: 0;
       }
-      .stone {
+      .stone.black, .stone.white {
+        border: 1px solid black;
         border-radius: 50%;
         width: 100%;
         height: 100%;
@@ -81,44 +88,51 @@
   </head>
   <body>
   <div class="container">
-      <div class="board row">
-        <?php for($i = 0; $i < 64; $i++): ?>
-          <?php if($i === 27 || $i === 36): ?>
-            <div class="grid-col grid" id="grid-<?= $i ;?>">
-              <div class="stone white"></div>
-            </div>
-          <?php elseif($i === 28 || $i === 35): ?>
-            <div class="grid-col grid" id="grid-<?= $i ;?>">
-              <div class="stone black"></div>
-            </div>
-          <?php else: ?>
-            <div class="grid-col grid" id="grid-<?= $i ;?>">
-            <div class="stone"></div>
-            </div>
-            <?php endif; ?>
+      <div class="board row" id="board">
+        <?php for($i = 0; $i < 8; $i++): ?>
+          <?php for($j = 0; $j < 8; $j++): ?>
+              <?php if($i .$j === '33' || $i .$j=== '44'): ?>
+                <div class="grid-col grid" id="grid-<?= $i .$j ;?>">
+                  <div class="stone white"></div>
+                </div>
+              <?php elseif($i .$j === '34' || $i .$j === '43'): ?>
+                <div class="grid-col grid" id="grid-<?= $i .$j ;?>">
+                  <div class="stone black"></div>
+                </div>
+              <?php else: ?>
+                <div class="grid-col grid" id="grid-<?= $i .$j ;?>">
+                <div class="stone"></div>
+                </div>
+                <?php endif; ?>
+          <?php endfor; ?>
         <?php endfor; ?>
       </div>
 
-      <div class="sideboard">
-          <div class="opponent">
+      <div class="sideboard" id="sideboard">
+          <div class="opponent" id="opponent">
             <p>相手</p>
+            <div  id="op-stone">
           </div>
 
-          <div class="time">
-            <p>経過時間:</p><p>0000</p>
+          <div class="time" id="time">
+            <p>経過時間:</p><p id="time">0000</p>
           </div>
           
-          <div class="now">
+          <div class="now" id="now">
             <p>手番</p>
+            <div class="now-player" id="now-player">
+
+            </div>
           </div>
 
-          <div class="turn">
-            <p>turn: </p><p>0000</p>
+          <div class="turn" id="turn">
+            <p>turn: </p><p id="turn-num">1</p>
           </div>
 
 
           <div class="you">
             <p>あなた</p>
+            <div id="your-stone"></div>
           </div>
       </div>
     </div>
