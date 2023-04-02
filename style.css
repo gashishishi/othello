@@ -1,0 +1,137 @@
+@charset 'utf-8';
+body *{
+    box-sizing: border-box;
+  }
+  .board>div{
+    height: 12.5%;
+  }
+
+  .board>div, .sideboard{        
+    border: 2px black solid;
+  }
+
+  .container{
+    display: flex;
+    margin: auto;
+    width: 800px;
+  }
+
+  .board{
+    background-color: green;
+    width: 600px;
+    height: 600px;
+  }
+  .sideboard{
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+  }
+  .grid-col {
+    width : 12.5%;
+  }
+
+  .row{
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .sideboard{
+    width: 200px;
+  }
+
+  .time, .turn {
+    display: flex;
+    justify-content: space-around;
+    border: 1px black solid;
+    height: 40px;
+  }
+
+  .opponent, .you, .now{
+    border: 1px black solid;
+
+    height: 200px;
+  }
+
+  #op-stone, #your-stone, #now-player{
+    width: 100px;
+    height: 100px;
+  }
+
+  p{
+    margin: 0;
+  }
+  .stone.black, .stone.white {
+    border: 1px solid black;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
+
+  .white {
+    background-color: white;
+  }
+  .black{
+    background-color: black;
+  }
+
+
+
+/* modal */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #f4f4f4;
+    margin: 20% auto;
+    width: 50%;
+    box-shadow: 0 5px 8px 0 rgba(0,0,0,0.2),0 7px 20px 0 rgba(0,0,0,0.17);
+    animation-name: modalopen;
+    animation-duration: 1s;
+}
+
+@keyframes modalopen {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+
+.modal-header h1 {
+}
+
+.modal-header {
+    background: lightblue;
+    padding: 3px 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.modalClose {
+    font-size: 2rem;
+}
+
+.modalClose:hover {
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 10px 20px;
+    color: black;
+}
+
+#first-second{
+    display: flex;
+    justify-content: space-around;
+}
+
+.choice-button{
+    width: 33%;
+}

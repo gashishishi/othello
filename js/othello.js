@@ -1,14 +1,18 @@
 jQuery(function($){
-    // 先手 黒 1, 後手 白 -1
-// モーダルでなんかやってfirstを変更。とりあえず先手である黒固定
+// 先手 黒 1, 後手 白 -1
+
+// 手番の設定
 let first = true;
+console.log('id-second');
+console.log($('#second'));
+
+
 let yourColor = 'black';
 let yourNum = 1;
 let opColor = 'white';
 let opNum = -1;
+
 let turn = 1;
-let stone = Array();
-// 先手は黒
 
 // board初期設定
 let board = new Array();
@@ -29,15 +33,12 @@ board[4][4] = -1;
 board[3][4] = 1;
 board[4][3] = 1;
 
+// board初期設定ここまで
 // サイドボード初期設定
 initSideboard();
 
-// if(turn==1){
-//     cpuPlay();
-
-// }
-
 // debug コンソールログに表示。
+console.log('起動時');
 console.log('turn');
 console.log(turn);
 console.log('yourColor');
@@ -49,69 +50,108 @@ console.log(opColor);
 console.log('opNum');
 console.log(opNum);
 console.log(board);
-    console.log(cpu());
-// クリックされたとき
-$('.grid').on('click',function(){
-    // board上なら石が置けるか調べ、可能なら石を置く。
+    console.log(getComsYX());
 
-    // idの情報、座標を設定する
-    grid = $(this).attr('id');
-    gridIdNum = getGridIdNum(grid);
-    yx = getYX(gridIdNum);
-    y = yx[0];
-    x = yx[1];
 
-    let skipTurn = true;
+// ゲームの開始。プレイヤーのクリックをトリガーにゲームを進行する。
+// プレイヤーが後手ならcomから開始。
+$('#second').on('click',function(){
+    first = false;
+    initSideboard();
+    setTimeout( function(){playCom()}, 500 );
+});
 
-    // 石が置ける場合
-    if(canSet(yx)){
-        setStone(grid, yx);
-
-        let arr = getChangeStonesArray(yx);
-
-            changeStones(arr);
-
-        // 手番の交代
-        let stone = changeTurn(first);
-        yourColor = stone[0];
-        yourNum = stone[1];
-        opColor = stone[2];
-        opNum = stone[3];
-        turn += 1;
-        updateSideboard();
-        setTimeout( function(){cpuPlay()}, 500 );
+// 自分の手番ならクリックをトリガーにする
+if(first && turn % 2 === 1 || !first && turn % 2 ===0){
+    // クリックされたとき
+    $('.grid').on('click',function(){
         
-    }
+        // board上なら石が置けるか調べ、可能なら石を置く。
 
+        // idの情報、座標を設定する
+        grid = $(this).attr('id');
+        gridIdNum = getGridIdNum(grid);
+        yx = getYX(gridIdNum);
+        y = yx[0];
+        x = yx[1];
 
+        let skipTurn = true;
+
+        // 石が置ける場合
+        if(canSet(yx)){
+            // クリックした位置に石を追加
+            setStone(grid, yx);
+            // 変更する石の配列を取得して、石を変更する
+            let stonesArr = getChangeStonesArray(yx);
+            changeStones(stonesArr);
+
+            // 手番の交代
+            changeTurn();
+
+            // comターンの開始
+            setTimeout( function(){playCom()}, 500 );
+        }
 
     });
+}
+
+
+// function initSecondPlay(){
+//     yourColor = 'white';
+//     yourNum = -1;
+//     opColor = 'black';
+//     opNum = 1;
+//     console.log('initsecondplay');
+// console.log('turn');
+// console.log(turn);
+// console.log('yourColor');
+// console.log(yourColor);
+// console.log('yourNum');
+// console.log(yourNum);
+// console.log('opColor');
+// console.log(opColor);
+// console.log('opNum');
+// console.log(opNum);
+    
+// // サイドボード初期設定
+// initSideboard();
+
+// }
+
 
 /**
- * 手番によりyouとopponentを交換する
+ * 手番によりyouとopponentの色と数字を交換する
  * @param {*} first 先手後手。falseでプレイヤーが後手の場合
  * @returns 
  */
-function changeTurn(first = true){
-    if(first){
-        if (turn % 2 === 0){
-            return ['black',1,'white',-1];
-        } else {
-            return ['white',-1,'black',1];
-        }
+function changeTurn(){
+    if(yourColor === 'black'){
+        yourColor = 'white';
+        yourNum = -1;
+        opColor = 'black';
+        opNum = 1;
     } else {
-        if (turn % 2 === 0){
-            return ['white',-1,'black',1];
-        } else {
-            return ['black',1,'white',-1];
-        }
+        yourColor = 'black';
+        yourNum = 1;
+        opColor = 'white';
+        opNum = -1;
     }
+    turn += 1;
+    // サイドボード情報の更新
+    updateSideboard();
 }
 
 function initSideboard(){
-    $('#your-stone').html('<div class="stone ' + yourColor + '"></div>');
-    $('#op-stone').html('<div class="stone ' + opColor + '"></div>');
-    $('#now-player').html('<div class="stone ' + yourColor + '"></div>');
+    if(first){
+        $('#your-stone').html('<div class="stone ' + yourColor + '"></div>');
+        $('#op-stone').html('<div class="stone ' + opColor + '"></div>');
+        $('#now-player').html('<div class="stone ' + yourColor + '"></div>');
+    } else {
+        $('#your-stone').html('<div class="stone ' + opColor + '"></div>');
+        $('#op-stone').html('<div class="stone ' + yourColor + '"></div>');
+        $('#now-player').html('<div class="stone ' + yourColor + '"></div>');
+    }
+
 }
 
 function updateSideboard(){
@@ -270,7 +310,12 @@ function getYX(gridIdNum){
 
 }
 
-function cpu(){
+
+/**
+ * comが石を置くマスを取得する。
+ * @returns comが石を置くマスの座標。 
+ */
+function getComsYX(){
     let zero = Array();
     let candidate = Array();
 
@@ -310,9 +355,9 @@ function cpu(){
             minChangeYX = yx;
         }
     }
+
+    // 経過ターン数によって返す値を変更する
     if(turn < 10){
-        console.log('yourNum');
-        console.log(minChangeYX);
         return minChangeYX;
     } else {
         return maxChangeYX;
@@ -320,22 +365,24 @@ function cpu(){
 
 }
 
-function cpuPlay(){
-    let cpuyx = cpu();
-    let cpuarr = getChangeStonesArray(cpuyx);
-    let cpugrid = 'grid-' + cpuyx.join("");
-    setStone(cpugrid, cpuyx);
-    changeStones(cpuarr); 
-    stone = changeTurn(first);
-    yourColor = stone[0];
-    yourNum = stone[1];
-    opColor = stone[2];
-    opNum = stone[3];
-    turn += 1;
-    updateSideboard();
-    console.log(cpuyx);
-    console.log(cpuarr);
-    console.log(cpugrid);
+/**
+ * comのプレイをまとめて実行する。
+ */
+function playCom(){
+    // comが石を置くマスの座標とid
+    let comyx = getComsYX();
+    let comgrid = 'grid-' + comyx.join("");
+
+    // comが変更する石の配列
+    let comStonesArr = getChangeStonesArray(comyx);
+
+    // 石の設置
+    setStone(comgrid, comyx);
+    // 石の変更
+    changeStones(comStonesArr);
+    // 手番の交代
+    changeTurn();
+
 }
 
 

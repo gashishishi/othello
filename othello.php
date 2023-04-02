@@ -5,83 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="stylesheet" href="style.css">
     <style>
-      body *{
-        box-sizing: border-box;
-      }
-      .board>div{
-        height: 12.5%;
-      }
-
-      .board>div, .sideboard{        
-        border: 2px black solid;
-      }
-
-      .container{
-        display: flex;
-        margin: auto;
-        width: 800px;
-      }
-
-      .board{
-        background-color: green;
-        width: 600px;
-        height: 600px;
-      }
-      .sideboard{
-        display: flex;
-        flex-direction: column;
-        height: 600px;
-      }
-      .grid-col {
-        width : 12.5%;
-      }
-
-      .row{
-        display: flex;
-        flex-wrap: wrap;
-      }
-
-      .sideboard{
-        width: 200px;
-      }
-
-      .time, .turn {
-        display: flex;
-        justify-content: space-around;
-        border: 1px black solid;
-        height: 40px;
-      }
-
-      .opponent, .you, .now{
-        border: 1px black solid;
-
-        height: 200px;
-      }
-
-      #op-stone, #your-stone, #now-player{
-        width: 100px;
-        height: 100px;
-      }
-
-      p{
-        margin: 0;
-      }
-      .stone.black, .stone.white {
-        border: 1px solid black;
-        border-radius: 50%;
-        width: 100%;
-        height: 100%;
-      }
-
-      .white {
-        background-color: white;
-      }
-      .black{
-        background-color: black;
-      }
-
 
     </style>
     <title>Hello, world!</title>
@@ -111,7 +36,9 @@
       <div class="sideboard" id="sideboard">
           <div class="opponent" id="opponent">
             <p>相手</p>
-            <div  id="op-stone">
+            <div id="op-stone">
+
+            </div>
           </div>
 
           <div class="time" id="time">
@@ -132,15 +59,53 @@
 
           <div class="you">
             <p>あなた</p>
-            <div id="your-stone"></div>
+            <div id="your-stone">
+
+            </div>
           </div>
       </div>
+  </div>
+
+  <br>
+
+    <!-- modal -->
+    <!-- ゲーム開始時のモーダル -->
+    <div id="startModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1>Great job 🎉</h1>
+        </div>
+        <div class="modal-body">
+          <p>先手後手を選択してください</p>
+          <div id="first-second">
+            <button class="choice-button modal-close" id="first">先手</button>
+            <button class="choice-button modal-close" id="second">後手</button>
+          </div>
+        </div>
+      </div>
     </div>
-
+    <!-- ゲーム開始時のモーダルここまで -->
+    <!-- ゲーム終了時のモーダル -->
+    <div id="endModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1>Great job 🎉</h1>
+          <span class="modal-close">×</span>
+        </div>
+        <div class="modal-body">
+          <p>先手後手を選択してください</p>
+          <div id="">
+            <button class="choice-button modal-close">先手</button>
+            <button class="choice-button modal-close">後手</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ゲーム終了時のモーダルここまで -->
+    
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-<script src="js/othello.js">
-
-    </script>
+<script src="js/othello.js"></script>
+<script src="js/modal.js"></script>
 
   </body>
 </html>
