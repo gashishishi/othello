@@ -6,6 +6,8 @@ class Othello {
         this.end = false;
         // 先手後手
         this.first = true;
+        // プレイヤーのクリックを受け付けるかを判定する変数
+        this.playerTurn = true;
 
         // 勝敗の結果を表示するためのプレイヤー情報。
         this.you = 1;
@@ -50,7 +52,6 @@ class Othello {
      * 手番によりyouとopponentの色と数字を交換する
      */
     changeTurn(){
-        console.log('changeturn');
         if(this.yourColor === 'black'){
             this.yourColor = 'white';
             this.yourNum = -1;
@@ -123,8 +124,11 @@ class Othello {
     }
 
     showResult(){
+        const endModal = $('#endModal');
         const endModalBody = $('#result');
-        const winner = judgeWinner();
+        const winner = this.judgeWinner();
+        console.log('winner');
+        console.log(winner);
         let msg = '';
         if (this.you < 0){
             if(winner < 0){
@@ -143,7 +147,8 @@ class Othello {
         }
 
         // モーダルのメッセージの設定
-        endModalBody.html(msg).css('display','block');
+        endModalBody.html(msg)
+        endModal.css('display','block');
     }
 
     /**
@@ -215,10 +220,6 @@ class Othello {
                     tempChanges = Array();
                     break;
                 }
-                console.log('yy');
-                console.log(yy);
-                console.log('xx');
-                console.log(xx);
                 // 調べた先に石がなければbreak
                 if(this.board[yy][xx] === 0){
                     tempChanges = Array();
@@ -246,6 +247,9 @@ class Othello {
      * @returns boolean
      */
     canSet(yx){
+        if(this.board[yx[0]][yx[1]] !== 0){
+            return false;
+        }
         // [上、右上、右、右下、下、左下、左、左上]
         let dy = [1,1,0,-1,-1,-1, 0, 1];
         let dx = [0,1,1, 1, 0,-1,-1,-1];
@@ -355,7 +359,6 @@ class Othello {
      * @param {*} comsYX yx配列.中身はint
      */
     set gridsInfoForCom( comsYX ){
-        console.log(comsYX);
         this.y = comsYX[0];
         this.x = comsYX[1];
         this.yx = new Array(this.y,this.x);
@@ -390,32 +393,20 @@ console.log('test');
 $('#second').on('click',function(){
     // プレイヤーの手番を後手に
     game.first = false;
+    game.playerTurn = false;
     game.you = -1;
     game.opponent = 1;
 
     // サイドボード再設定
     game.initSideboard();
     // comターンの開始
-    setTimeout( function(){ game.playCom() }, 500 );
+    setTimeout( function(){ 
+        game.playCom();
+        // 手番の交代
+        game.changeTurn();
+        game.playerTurn = true;
+    }, 500 );
 });
-
-// ゲームの終了を調べる
-// ターンのスキップを判定する
-if(game.skip){
-    // 2連続スキップでゲーム終了
-    if(game.checkSkip()){
-        game.end = true;
-        game.showResult();
-    } else {
-        game.skip = false;
-    }
-} else {
-    game.skip = game.checkSkip();
-    game.checkEnd();
-    if(game.end){
-        game.showResult();
-    }
-}
 
 if(!game.end){
 
@@ -424,80 +415,96 @@ if(!game.end){
     // クリックされたとき
 
     /********** プレイヤーのターン処理の開始 **********/
+    if(game.playerTurn || !game.end){
     $('.grid').on('click',function(){
-        
-        // board上なら石が置けるか調べ、可能なら石を置く。
+            game.playerTurn = false;
+            
+            // board上なら石が置けるか調べ、可能なら石を置く。
 
-        // idの情報、座標を設定する
-        let clickedGrid = $(this).attr('id');
-        // クラスのプロパティ設定
-        game.gridsInfo = clickedGrid;
+            // idの情報、座標を設定する
+            let clickedGrid = $(this).attr('id');
+            // クラスのプロパティ設定
+            game.gridsInfo = clickedGrid;
 
-        // 石が置ける場合
-        if(game.canSet([game.y,game.x])){
-            // クリックした位置に石を追加
-            game.addStone();
-            // 変更する石の配列を取得して、石を変更する
-            let stonesArr = game.getChangeStonesArray(game.yx);
-            game.changeStones(stonesArr);
+            // 石が置ける場合
+            if(game.canSet([game.y,game.x])){
+                // クリックした位置に石を追加
+                game.addStone();
+                // 変更する石の配列を取得して、石を変更する
+                let stonesArr = game.getChangeStonesArray(game.yx);
+                game.changeStones(stonesArr);
 
-            // yourSkipフラグを折る
-            game.yourSkip = false;
+                // yourSkipフラグを折る
+                game.yourSkip = false;
 
-            // 石を置いたらゲームの終了を判定する
-            game.checkEnd();
+                // 石を置いたらゲームの終了を判定する
+                game.checkEnd();
 
-    /********** プレイヤーのターン処理ここまで **********/
+        /********** プレイヤーのターン処理ここまで **********/
 
-    /********** comのターン処理の開始 **********/
-        // 終了してないならcomのターンを始める
-        if(!game.end){
-            // 手番の交代
-            game.changeTurn();
-            // スキップの判定
-            game.comSkip = game.checkSkip();
+            /********** comのターン処理の開始 **********/
+                // 終了してないならcomのターンを始める
+                if(!game.end){
+                    // 手番の交代
+                    game.changeTurn();
+                    // スキップの判定
+                    game.comSkip = game.checkSkip();
 
-            // 2連続スキップでゲームの終了
-            if(game.comSkip && game.yourSkip){
-                game.end = true;
-                game.showResult();
-            // comのターンがスキップされるならスキップ。
-            }   else if(game.comSkip){            
-                // 手番の交代
-                game.changeTurn();
-            // comがプレイする場合。石をおいてフラグを折る。
-            } else {
-                // skipフラグを折る
-                game.comSkip = false;
-                // comのプレイ
-                setTimeout( function(){ game.playCom() }, 500 );
-                // 手番の交代
-                this.changeTurn();
-            }
-            // 終了してたら終了
-            } else {
-                game.end = true;
-                game.showResult();
-            }
+                    // 2連続スキップでゲームの終了
+                    if(game.comSkip && game.yourSkip){
+                        game.end = true;
+                        game.showResult();
+                    // comのターンがスキップされるならスキップ。
+                    }   else if(game.comSkip){            
+                        // 手番の交代
+                        game.changeTurn();
+                    // comがプレイする場合。石をおいてフラグを折る。
+                    } else {
+                        // skipフラグを折る
+                        game.comSkip = false;
+                        // comのプレイ
+                        setTimeout( function(){
+                            game.playCom();
+                            // 手番の交代
+                            game.changeTurn();
+                            game.playerTurn = true;
+
+                        }, 500 );
+                    }
+                // 終了してたら終了
+                } else {
+                    game.end = true;
+                    game.showResult();
+                }
+
             // comの手番終了時にゲームの終了判定をする
             game.checkEnd();
+            }
 
             /********** comのターン処理ここまで **********/
 
-            /********** プレイヤーのターンのスキップ及びゲーム終了を調べる **********/
-            // プレイヤーのターン開始の頭でスキップを判定する。
-            game.yourSkip = game.checkSkip();
-            // 2連続スキップかゲーム終了がtrueなら終了
-            if( (game.yourSkip && game.comSkip) || game.end){
-                game.end = true;
+            // 終わってなければプレイヤーのターン開始処理
+            if(!game.end){
+                /********** プレイヤーのターンのスキップ及びゲーム終了を調べる **********/
+
+                // プレイヤーのターン開始の頭でスキップを判定する。
+                game.yourSkip = game.checkSkip();
+                // 2連続スキップかゲーム終了がtrueなら終了
+                if( (game.yourSkip && game.comSkip) || game.end){
+                    game.end = true;
+                    game.showResult();
+                // turnがスキップされるならスキップ
+                } else if(game.yourSkip){
+                    game.changeTurn();
+                    //////////comのプレイの開始
+                }
+            } else {
                 game.showResult();
-            // turnがスキップされるならスキップ
-            } else if(game.yourSkip){
-                game.changeTurn();
-                //////////comのプレイの開始
+
             }
-        }
-    });
+            console.log(game.yourSkip,game.comSkip);
+        });
+    }
 }
 }
 
