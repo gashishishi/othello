@@ -34,46 +34,49 @@
       </div>
 
       <div class="sideboard" id="sideboard">
-          <div class="opponent" id="opponent">
+
+          <div class="opponent h-33 outer" id="opponent">
             <p>相手</p>
-            <div id="op-stone">
+            <div class="inner" id="op-stone">
 
             </div>
-          </div>
 
-          <div class="time" id="time">
-            <p>経過時間:</p><p id="time">0000</p>
+
           </div>
           
-          <div class="now" id="now">
-            <p>手番</p>
-            <div class="now-player" id="now-player">
 
+            <div class="now h-33 d-flex flex-column space-between" id="now">
+              <div class="">
+                <p>手番</p>
+                <div class="now-player m-auto" id="now-player">
+                </div>
+              </div>
+              <div>
+                <div class="time" id="time">
+                  <p>経過時間:</p><p id="time">0000</p>
+                </div>
+                <div class="turn" id="turn">
+                  <p>turn: </p><p id="turn-num">1</p>
+                </div>               
+              </div>
             </div>
-          </div>
 
-          <div class="turn" id="turn">
-            <p>turn: </p><p id="turn-num">1</p>
-          </div>
+            
 
-
-          <div class="you">
+          <div class="you h-33 outer">
             <p>あなた</p>
-            <div id="your-stone">
+            <div class="inner" id="your-stone">
 
             </div>
           </div>
       </div>
   </div>
-
-  <br>
-
     <!-- modal -->
     <!-- ゲーム開始時のモーダル -->
     <div id="startModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h1>Great job 🎉</h1>
+          <h1>ゲーム開始</h1>
         </div>
         <div class="modal-body">
           <p>先手後手を選択してください</p>
@@ -89,7 +92,7 @@
     <div id="endModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h1>Great job 🎉</h1>
+          <h1>ゲーム終了</h1>
           <span class="modal-close">×</span>
         </div>
         <div class="modal-body" id="result">
