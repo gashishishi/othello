@@ -13,6 +13,7 @@
   </head>
   <body>
   <div class="container">
+    <div class="board-wrapper">
       <div class="board row" id="board">
         <?php for($i = 0; $i < 8; $i++): ?>
           <?php for($j = 0; $j < 8; $j++): ?>
@@ -32,24 +33,34 @@
           <?php endfor; ?>
         <?php endfor; ?>
       </div>
-
+    </div>
       <div class="sideboard" id="sideboard">
 
-          <div class="opponent h-33 outer" id="opponent">
-            <p>相手</p>
-            <div class="inner" id="op-stone">
-
+          <div class="opponent h-33 w-33 outer" id="opponent">
+            <div class="w-70 m-auto inner">
+              
+              <p>相手</p>
+              <div class="player-stone-outer">
+                
+                <div class="player-stone-inner" id="op-stone">
+    
+                </div>
+    
+              </div>
+  
             </div>
-
-
           </div>
           
 
-            <div class="now h-33 d-flex flex-column space-between" id="now">
-              <div class="">
+            <div class="now h-33 d-flex flex-column space-between w-33" id="now">
+              <div class="w-70 m-auto">
                 <p>手番</p>
-                <div class="now-player m-auto" id="now-player">
-                </div>
+                  <div class="player-stone-outer">
+  
+                    <div class="now-player m-auto player-stone-inner" id="now-player">
+                    </div>
+                    
+                  </div>
               </div>
               <div>
                 <div class="time" id="time">
@@ -63,11 +74,19 @@
 
             
 
-          <div class="you h-33 outer">
-            <p>あなた</p>
-            <div class="inner" id="your-stone">
-
-            </div>
+          <div class="you h-33 w-33 outer">
+            <div class="w-70 m-auto inner">
+  
+              <p>あなた</p>
+              <div class="player-stone-outer">
+    
+                <div class="player-stone-inner" id="your-stone">
+    
+                  </div>
+               
+              </div> 
+              
+            </div>  
           </div>
       </div>
   </div>

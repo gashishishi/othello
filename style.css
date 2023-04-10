@@ -1,13 +1,13 @@
 @charset 'utf-8';
-
+body{
+    margin: 0;
+    padding: 0;
+}
 body *{
     /* border: 1px black solid; */
     box-sizing: border-box;
   }
 
-.h-33{
-    height: 33%;
-}
 .d-flex{
     display: flex;
 }
@@ -34,6 +34,15 @@ transform: translateY(-50%) translateX(-50%);
     margin: auto;
 }
 
+.w-33{
+    width: 33%;
+}
+.w-70{
+    width: 70%;
+}
+.w-30{
+    width: 30%;
+}
 
 .board>div{
 height: 12.5%;
@@ -44,44 +53,61 @@ border: 2px black solid;
 }
 
 .container{
-display: flex;
 margin: auto;
 max-width: 100%;
-
 }
-
+.board-wrapper{
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+}
 .board{
 background-color: green;
-width: 600px;
-height: 600px;
+
+height: 100%;
+width: 100%;
+max-height: 100%;
+max-width: 100%;
+top:0;right:0;bottom:0;left:0;position:absolute;
 }
 .sideboard{
-display: flex;
-flex-direction: column;
-height: 600px;
-}
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    width: 100% ;
+    height: auto;
+    }
 .grid-col {
 width : 12.5%;
 }
+@media(min-width:600px){
 
-@media(max-width:400px){
-    
+.h-33{
+    height: 33%;
+}
+.w-33{
+    width: 100%;
+}
+
 .container{
-    display: block;
-    margin: auto;
-    max-width: 100%;
-    padding-top: 100%;
-    
+    display: flex;
+}
+.sideboard{
+    flex-direction: column;
+    width: 20%;
+    justify-content: between;
+}
+.board-wrapper{
+    width: 80%;
+    padding-top:80%;
+}
+
+}
+
+@media(min-width:800px){
+    .container{
+        width: 800px;
     }
-    .board{
-        max-width: 100%;
-        top:0;right:0;bottom:0;left:0;position:absolute;
-        }
-        .sideboard{
-        display: flex;
-        flex-direction: column;
-        height: 600px;
-        }
 }
 
 .row{
@@ -89,9 +115,6 @@ display: flex;
 flex-wrap: wrap;
 }
 
-.sideboard{
-width: 200px;
-}
 
 .time, .turn {
 display: flex;
@@ -102,16 +125,26 @@ border-bottom: 1px black solid;
 border-top: 1px black solid;
 }
 
-.opponent, .you, .now{
-border: 1px black solid;
+.now{
+border-top: 2px black solid;
+border-bottom: 2px black solid;
 
-height: 200px;
 }
 
-#op-stone, #your-stone, #now-player{
-width: 100px;
-height: 100px;
-}
+
+.player-stone-outer{
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    }
+    .player-stone-inner{
+   
+height: 100%;
+width: 100%;
+max-height: 100%;
+max-width: 100%;
+top:0;right:0;bottom:0;left:0;position:absolute;
+    }
 
 p{
 margin: 0;
@@ -129,7 +162,6 @@ background-color: white;
 .black{
 background-color: black;
 }
-
 
 
 /* modal */
