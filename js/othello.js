@@ -142,7 +142,9 @@ class Othello {
         const endModalBody = $('#result');
         const winner = this.judgeWinner();
         let msg = '';
-        if (this.you < 0){
+        if(winner === 0){
+            msg = '<p>引き分けです。</p>';
+        } else if (this.you < 0){
             if(winner < 0){
                 msg = '<p>あなたの勝利です!<p>';
             } else {
@@ -154,8 +156,6 @@ class Othello {
             } else {
                 msg = '<p>対戦相手の勝利です。</p>';
             }
-        } else {
-            msg = '<p>引き分けです。</p>';
         }
 
         // モーダルのメッセージの設定
@@ -403,14 +403,13 @@ class Othello {
 
         if(this.checkEnd()){
             this.showResult();
-        } else if(this.comSkip) {
-            this.changeTurn();
-            this.switchTurn();
         } else {
             // この時点でもplayer = false, com = true
+            if(!this.comSkip) {
+                // comのプレイ
+                this.setComStone();
+            }
 
-            // comのプレイ
-            this.setComStone();
             if(this.checkEnd()){
                 this.showResult();
             } else {
