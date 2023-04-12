@@ -19,6 +19,11 @@ jQuery(function($){
     function startModalOpen() {
       startModal.css("display","block");
     }
+
+    // othelloクラスのshowResultクラスでやってしまうことにする。
+    function endModalOpen() {
+      endModal.css("display","block");
+    }
     
     function modalClose() {
       modal.css("display","none");

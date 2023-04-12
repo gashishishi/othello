@@ -1,79 +1,167 @@
 @charset 'utf-8';
+body{
+    margin: 0;
+    padding: 0;
+}
 body *{
+    /* border: 1px black solid; */
     box-sizing: border-box;
   }
-  .board>div{
-    height: 12.5%;
-  }
 
-  .board>div, .sideboard{        
-    border: 2px black solid;
-  }
-
-  .container{
+.d-flex{
     display: flex;
-    margin: auto;
-    width: 800px;
-  }
+}
 
-  .board{
-    background-color: green;
-    width: 600px;
-    height: 600px;
-  }
-  .sideboard{
-    display: flex;
+.space-between{
+    justify-content: space-between;
+}
+
+.flex-column{
     flex-direction: column;
-    height: 600px;
-  }
-  .grid-col {
-    width : 12.5%;
-  }
+}
 
-  .row{
-    display: flex;
-    flex-wrap: wrap;
-  }
+.outer{
+position: relative;
+}
+.inner{
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translateY(-50%) translateX(-50%);
+}
 
-  .sideboard{
-    width: 200px;
-  }
+.m-auto{
+    margin: auto;
+}
 
-  .time, .turn {
-    display: flex;
-    justify-content: space-around;
-    border: 1px black solid;
-    height: 40px;
-  }
+.w-33{
+    width: 33%;
+}
+.w-70{
+    width: 70%;
+}
+.w-30{
+    width: 30%;
+}
 
-  .opponent, .you, .now{
-    border: 1px black solid;
+.board>div{
+height: 12.5%;
+}
 
-    height: 200px;
-  }
+.board>div, .sideboard{        
+border: 2px black solid;
+}
 
-  #op-stone, #your-stone, #now-player{
-    width: 100px;
-    height: 100px;
-  }
-
-  p{
-    margin: 0;
-  }
-  .stone.black, .stone.white {
-    border: 1px solid black;
-    border-radius: 50%;
+.container{
+margin: auto;
+max-width: 100%;
+}
+.board-wrapper{
+    position: relative;
     width: 100%;
-    height: 100%;
-  }
+    padding-top: 100%;
+}
+.board{
+background-color: green;
 
-  .white {
-    background-color: white;
-  }
-  .black{
-    background-color: black;
-  }
+height: 100%;
+width: 100%;
+max-height: 100%;
+max-width: 100%;
+top:0;right:0;bottom:0;left:0;position:absolute;
+}
+.sideboard{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    width: 100% ;
+    height: auto;
+    }
+.grid-col {
+width : 12.5%;
+}
+@media(min-width:600px){
 
+.h-33{
+    height: 33%;
+}
+.w-33{
+    width: 100%;
+}
+
+.container{
+    display: flex;
+}
+.sideboard{
+    flex-direction: column;
+    width: 20%;
+    justify-content: between;
+}
+.board-wrapper{
+    width: 80%;
+    padding-top:80%;
+}
+
+}
+
+@media(min-width:800px){
+    .container{
+        width: 800px;
+    }
+}
+
+.row{
+display: flex;
+flex-wrap: wrap;
+}
+
+
+.time, .turn {
+display: flex;
+justify-content: space-around;
+}
+.time{
+border-bottom: 1px black solid;
+border-top: 1px black solid;
+}
+
+.now{
+border-top: 2px black solid;
+border-bottom: 2px black solid;
+
+}
+
+
+.player-stone-outer{
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    }
+    .player-stone-inner{
+   
+height: 100%;
+width: 100%;
+max-height: 100%;
+max-width: 100%;
+top:0;right:0;bottom:0;left:0;position:absolute;
+    }
+
+p{
+margin: 0;
+}
+.stone.black, .stone.white {
+border: 1px solid black;
+border-radius: 50%;
+width: 100%;
+height: 100%;
+}
+
+.white {
+background-color: white;
+}
+.black{
+background-color: black;
+}
 
 
 /* modal */
@@ -104,8 +192,6 @@ body *{
     to {opacity: 1}
 }
 
-.modal-header h1 {
-}
 
 .modal-header {
     background: lightblue;
