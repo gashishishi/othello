@@ -20,7 +20,7 @@ jQuery(function($){
       startModal.css("display","block");
     }
 
-    // othelloクラスのshowResultクラスでやってしまうことにする。
+    // ゲーム終了時にモーダルを開く。けど、othelloクラスのshowResultクラスでやってしまうことにする。
     function endModalOpen() {
       endModal.css("display","block");
     }

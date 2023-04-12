@@ -4,8 +4,7 @@ class Othello {
     constructor(){
         // ゲームの終了判定
         this.end = false;
-        // 先手後手
-        this.first = true;
+        
         // 合わせてターンの判定に使う
             // プレイヤーのクリックを受け付けるかを判定する変数
             this.playerTurn = true;
@@ -14,7 +13,7 @@ class Othello {
 
         // 勝敗の結果を表示するためのプレイヤー情報。
         this.you = 1;
-        this.opponent = -1;
+        this.com = -1;
 
         // 石の色の設定
         this.yourColor = 'black';
@@ -48,6 +47,7 @@ class Othello {
         this.y = null;
         this.x = null;
 
+        // サイドボード初期設定
         this.initSideboard();
     }
 
@@ -161,13 +161,16 @@ class Othello {
         // モーダルのメッセージの設定
         endModalBody.html(msg)
         endModal.css('display','block');
+
+        // timerのストップ
+        $('#timer').removeClass('timerActive');
     }
 
     /**
      * サイドボードの初期設定を行う
      */
     initSideboard(){
-        if(this.first){
+        if(0 < this.you){
             $('#your-stone').html('<div class="stone ' + this.yourColor + '"></div>');
             $('#op-stone').html('<div class="stone ' + this.opColor + '"></div>');
             $('#now-player').html('<div class="stone ' + this.yourColor + '"></div>');
