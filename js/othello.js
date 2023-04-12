@@ -6,8 +6,11 @@ class Othello {
         this.end = false;
         // 先手後手
         this.first = true;
-        // プレイヤーのクリックを受け付けるかを判定する変数
-        this.playerTurn = true;
+        // 合わせてターンの判定に使う
+            // プレイヤーのクリックを受け付けるかを判定する変数
+            this.playerTurn = true;
+            // comターンのループ処理に使う変数
+            this.comTurn = false;
 
         // 勝敗の結果を表示するためのプレイヤー情報。
         this.you = 1;
@@ -68,10 +71,19 @@ class Othello {
         this.updateSideboard();
     }
 
-    /**
-     * ゲームの終了を判定する。
-     */
+    switchTurn(){
+        [this.playerTurn, this.comTurn] = [this.comTurn, this.playerTurn];
+    }
+
+/**
+ * ゲームが終了していたらthis.endをtrueにする。
+ * @returns boolean 終了ならtrueを返す
+ */
     checkEnd(){
+        if(this.yourSkip && this.comSkip){
+            this.end = true;
+            return true;
+        }
         // 全てのマスが埋まっているかを判定する。
         let zeroCount = 0;
         let white = 0;
@@ -90,7 +102,9 @@ class Othello {
         // 全てのマスが埋まっている or どちらかの石がゼロならゲーム終了
         if(zeroCount === 0 || white === 0 || black === 0){
             this.end = true;
+            return true;
         }
+        return false
     }
 
     /**
@@ -127,10 +141,10 @@ class Othello {
         const endModal = $('#endModal');
         const endModalBody = $('#result');
         const winner = this.judgeWinner();
-        console.log('winner');
-        console.log(winner);
         let msg = '';
-        if (this.you < 0){
+        if(winner === 0){
+            msg = '<p>引き分けです。</p>';
+        } else if (this.you < 0){
             if(winner < 0){
                 msg = '<p>あなたの勝利です!<p>';
             } else {
@@ -142,8 +156,6 @@ class Othello {
             } else {
                 msg = '<p>対戦相手の勝利です。</p>';
             }
-        } else {
-            msg = '<p>引き分けです。</p>';
         }
 
         // モーダルのメッセージの設定
@@ -370,7 +382,7 @@ class Othello {
     /**
      * comのプレイをまとめて実行する。
      */
-    playCom(){
+    setComStone(){
         // comが石を置くマスの座標とid、y,xなどを設定する。
         this.gridsInfoForCom = this.getComsYX();
         // comが変更する石の配列
@@ -382,130 +394,113 @@ class Othello {
         this.changeStones(changeStonesArr);
     }
 
+
+    playCom(){
+        // 呼ばれた時点でplayer = false, com = true
+
+        // スキップの判定
+        this.comSkip = this.checkSkip();
+
+        if(this.checkEnd()){
+            this.showResult();
+        } else {
+            // この時点でもplayer = false, com = true
+            if(!this.comSkip) {
+                // comのプレイ
+                this.setComStone();
+            }
+
+            if(this.checkEnd()){
+                this.showResult();
+            } else {
+                // 手番の交代とプレイヤースキップの判定
+                this.changeTurn();
+
+                // プレイヤーのスキップを判定する。
+                this.yourSkip = this.checkSkip();
+
+                if(this.checkEnd()){
+                    this.showResult();
+                } else if(this.yourSkip){
+                    this.changeTurn(); // comのターンに戻す
+                    console.log('player skip');
+                    console.log(this.yourSkip,this.comSkip);
+                    console.log('settimeout');
+                    setTimeout(() => {this.playCom();},1000);
+                } else{
+                    // 終了でもスキップでもなければ、プレイヤーが石を置けるようswitchTurnする。
+                    this.switchTurn();
+
+                }
+            }
+        }
+    }
+
 }
 
 //ゲームプレイ
 
 const game = new Othello();
-console.log('test');
 // ゲームの開始。プレイヤーのクリックをトリガーにゲームを進行する。
 // プレイヤーが後手ならcomから開始。
 $('#second').on('click',function(){
     // プレイヤーの手番を後手に
     game.first = false;
-    game.playerTurn = false;
+    game.switchTurn();
     game.you = -1;
     game.opponent = 1;
 
     // サイドボード再設定
     game.initSideboard();
     // comターンの開始
-    setTimeout( function(){ 
-        game.playCom();
+    setTimeout(() =>{ 
+        game.setComStone();
         // 手番の交代
         game.changeTurn();
-        game.playerTurn = true;
+        game.switchTurn();
     }, 500 );
 });
 
-if(!game.end){
 
-    // 自分の手番ならクリックをトリガーにする
-    if(game.first && game.turn % 2 === 1 || !game.first && game.turn % 2 ===0){
-    // クリックされたとき
-
-    /********** プレイヤーのターン処理の開始 **********/
-    if(game.playerTurn || !game.end){
-    $('.grid').on('click',function(){
-            game.playerTurn = false;
-            
-            // board上なら石が置けるか調べ、可能なら石を置く。
-
-            // idの情報、座標を設定する
-            let clickedGrid = $(this).attr('id');
-            // クラスのプロパティ設定
-            game.gridsInfo = clickedGrid;
-
-            // 石が置ける場合
-            if(game.canSet([game.y,game.x])){
-                // クリックした位置に石を追加
-                game.addStone();
-                // 変更する石の配列を取得して、石を変更する
-                let stonesArr = game.getChangeStonesArray(game.yx);
-                game.changeStones(stonesArr);
-
-                // yourSkipフラグを折る
-                game.yourSkip = false;
-
-                // 石を置いたらゲームの終了を判定する
-                game.checkEnd();
-
-        /********** プレイヤーのターン処理ここまで **********/
-
-            /********** comのターン処理の開始 **********/
-                // 終了してないならcomのターンを始める
-                if(!game.end){
-                    // 手番の交代
-                    game.changeTurn();
-                    // スキップの判定
-                    game.comSkip = game.checkSkip();
-
-                    // 2連続スキップでゲームの終了
-                    if(game.comSkip && game.yourSkip){
-                        game.end = true;
-                        game.showResult();
-                    // comのターンがスキップされるならスキップ。
-                    }   else if(game.comSkip){            
-                        // 手番の交代
-                        game.changeTurn();
-                    // comがプレイする場合。石をおいてフラグを折る。
-                    } else {
-                        // skipフラグを折る
-                        game.comSkip = false;
-                        // comのプレイ
-                        setTimeout( function(){
-                            game.playCom();
-                            // 手番の交代
-                            game.changeTurn();
-                            game.playerTurn = true;
-
-                        }, 500 );
-                    }
-                // 終了してたら終了
-                } else {
-                    game.end = true;
-                    game.showResult();
-                }
-
-            // comの手番終了時にゲームの終了判定をする
-            game.checkEnd();
-            }
-
-            /********** comのターン処理ここまで **********/
-
-            // 終わってなければプレイヤーのターン開始処理
+        /********** プレイヤーターン処理の開始 **********/
+        $('.grid').on('click',function(){
+            // ゲーム終了後は操作を無効に
             if(!game.end){
-                /********** プレイヤーのターンのスキップ及びゲーム終了を調べる **********/
 
-                // プレイヤーのターン開始の頭でスキップを判定する。
-                game.yourSkip = game.checkSkip();
-                // 2連続スキップかゲーム終了がtrueなら終了
-                if( (game.yourSkip && game.comSkip) || game.end){
-                    game.end = true;
-                    game.showResult();
-                // turnがスキップされるならスキップ
-                } else if(game.yourSkip){
-                    game.changeTurn();
-                    //////////comのプレイの開始
+                // 自分の手番ならクリックをトリガーにする
+                if(game.playerTurn){
+                    game.switchTurn(); // クリックされたらとりあえずプレイヤーが石を設置できなくする
+
+                    // idの情報、座標を設定する
+                    let clickedGrid = $(this).attr('id');
+                    // クラスのプロパティ設定
+                    game.gridsInfo = clickedGrid;
+
+                    if(!game.canSet([game.y,game.x])){
+                        game.switchTurn(); //石が置けないなら再びクリックできるように
+                        
+                    } else {
+                        // クリックした位置に石を追加
+                        game.addStone();
+
+                        let stonesArr = game.getChangeStonesArray(game.yx);
+                        game.changeStones(stonesArr);
+
+                        // 石を置いたらゲームの終了を判定する
+                        if(game.checkEnd()){
+                            game.showResult();
+                        }
+
+                        // 手番の交代
+                        game.changeTurn(); // クリック時点でswitchTurn済み
+
+                        console.log('player to com');
+                        /********** プレイヤーターン処理の終了 **********/
+                        /********** comターン処理の開始 **********/
+                        setTimeout(() => {game.playCom()}, 1000);
+                    }
                 }
-            } else {
-                game.showResult();
-
             }
-            console.log(game.yourSkip,game.comSkip);
-        });
-    }
-}
-}
+});
 
     });

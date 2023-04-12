@@ -200,11 +200,11 @@ background-color: black;
     justify-content: space-between;
 }
 
-.modalClose {
+.modal-close {
     font-size: 2rem;
 }
 
-.modalClose:hover {
+.modal-close:hover {
     cursor: pointer;
 }
 
